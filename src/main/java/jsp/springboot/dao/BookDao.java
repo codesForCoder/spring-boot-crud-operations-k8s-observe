@@ -4,6 +4,7 @@ package jsp.springboot.dao;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +15,7 @@ import jsp.springboot.entity.Book;
 import jsp.springboot.repository.BookRepository;
 
 @Repository
+@Slf4j
 public class BookDao {
 
 	@Autowired
@@ -21,6 +23,7 @@ public class BookDao {
 	
 	//to save a single book record
 	public Book saveBook(Book book) {
+		log.info("Book is being saved : {}", book);
 		return bookRepository.save(book);
 	}
 	
@@ -31,6 +34,7 @@ public class BookDao {
 	
 	//fetch a book by id
 	public Optional<Book> getBookById(int id) {
+		log.info("Fetching book by id in repo {}", id);
 		return bookRepository.findById(id);
 	}
 	

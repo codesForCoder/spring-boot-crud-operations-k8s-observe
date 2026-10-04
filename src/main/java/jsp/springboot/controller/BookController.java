@@ -1,6 +1,9 @@
 package jsp.springboot.controller;
 
 import java.util.List;
+import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,7 @@ import jsp.springboot.service.BookService;
 
 @RestController
 @RequestMapping("/api/books")
+@Slf4j
 public class BookController {
 	
 	
@@ -28,6 +32,7 @@ public class BookController {
 	//insert operation
 	@PostMapping
 	public ResponseEntity<ServerResponse<Book>> saveBook(@RequestBody Book book) {
+		log.info("Book saving api us called with payload: {}", book);
 		return bookService.saveBook(book);
 	}
 	
@@ -39,7 +44,8 @@ public class BookController {
 	
 	//fetching a record by Id
 	@GetMapping("/{id}")
-	public ResponseEntity<ServerResponse<Book>> fetchBookById(@PathVariable int id) {
+	public ResponseEntity<ServerResponse<Map<String,Object>>> fetchBookById(@PathVariable int id) {
+		log.info("Fetching book by id {}", id);
 		return bookService.getBookById(id);
 	}
 	
