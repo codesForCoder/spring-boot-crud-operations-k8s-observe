@@ -21,6 +21,6 @@ Thumbs.db
 *.bak
 *.swp
 
-# Spring Boot configuration
-src/main/resources/application.properties
-"application.properties" 
+## Spring Boot configuration
+#src/main/resources/application.properties
+#"application.properties"
