@@ -7,14 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import jsp.springboot.dto.ServerResponse;
 import jsp.springboot.entity.Book;
@@ -44,9 +37,11 @@ public class BookController {
 	
 	//fetching a record by Id
 	@GetMapping("/{id}")
-	public ResponseEntity<ServerResponse<Map<String,Object>>> fetchBookById(@PathVariable int id) {
+	public ResponseEntity<ServerResponse<Map<String,Object>>> fetchBookById(@PathVariable int id , @RequestParam(value = "tutorial", defaultValue = "1") int tutorialId , @RequestParam(value = "product", defaultValue = "1") int productId) {
 		log.info("Fetching book by id {}", id);
-		return bookService.getBookById(id);
+		log.info("Fetching Tutorial by id {}", tutorialId);
+		log.info("Fetching Product by id {}", productId);
+		return bookService.getBookById(id , tutorialId, productId);
 	}
 	
 	//update a book record

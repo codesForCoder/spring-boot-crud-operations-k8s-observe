@@ -12,7 +12,7 @@ import jsp.springboot.dto.Product;
 import jsp.springboot.dto.Tutorial;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
@@ -81,15 +81,15 @@ public class BookService {
 	
 	
 	//fetch Book by Id
-	public ResponseEntity<ServerResponse<Map<String,Object>>> getBookById(int id) {
+	public ResponseEntity<ServerResponse<Map<String, Object>>> getBookById(int id, int tutorialId, int productId) {
 		log.info("Fetching book by id from service {}", id);
 		Span span = Span.current();
 		ServerResponse<Map<String,Object>> response = new ServerResponse<>();
 		Optional<Book> optionalBook = bookDao.getBookById(id);
 		log.info("Fetched book by id from service {}", optionalBook);
-		Optional<Product> optionalProduct = getProductById(id);
+		Optional<Product> optionalProduct = getProductById(productId);
 		log.info("Fetched product by id from service {}", optionalProduct);
-		Optional<Tutorial> optionalTutorial = getTutorialById(id);
+		Optional<Tutorial> optionalTutorial = getTutorialById(tutorialId);
 		log.info("Fetched tutorial by id from service {}", optionalTutorial);
 		Map<String , Object> results = new HashMap<>();
 		if(optionalBook.isPresent()) {
@@ -112,10 +112,23 @@ public class BookService {
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}
 		else {
-			log.info("Book not found with id {}", id);
-				RuntimeException e =  new NoRecordFoundException("There is no record with the id " + id);
+			StringBuilder errorMessageBuilder = new StringBuilder();
+			if (!results.containsKey("book"))
+			{
+				log.info("Book is not found with id {}", id);
+				errorMessageBuilder.append("Book not found with id : ").append(id).append("||");
+			}
+			if (!results.containsKey("product")){
+				log.info("Product is not found with id {}", productId);
+				errorMessageBuilder.append("Product not found with id : ").append(productId).append("||");
+			}
+			if (!results.containsKey("tutorial")){
+				log.info("Tutorial is not found with id {}", tutorialId);
+				errorMessageBuilder.append("Tutorial not found with id ").append(tutorialId).append("||");
+			}
+				RuntimeException e =  new NoRecordFoundException(errorMessageBuilder.toString());
 				span.recordException(e);
-				span.setStatus(StatusCode.ERROR, "There is no record with the id " + id);
+				span.setStatus(StatusCode.ERROR, errorMessageBuilder.toString());
 			throw e;
 		}
 	}
